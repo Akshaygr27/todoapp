@@ -13,6 +13,15 @@
     const noResults = document.getElementById("no-results");
     const filterSelect = document.getElementById("filter-select");
     const exportSelect = document.getElementById("export-select");
+    const toastEl = document.getElementById("toast");
+    const toastBody = document.getElementById("toast-body");
+    const toastInstance = new bootstrap.Toast(toastEl);
+
+    // Show toast with message
+    function showToast(message) {
+      toastBody.textContent = message;
+      toastInstance.show();
+    }
 
     // Generate a simple unique ID using timestamp and random string
     const generateId = () => `id-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
@@ -101,6 +110,7 @@
       todos.push({ id: generateId(), text, date, completed: false });
       form.reset();
       renderTodos();
+      showToast("Task created successfully.");
     };
 
     // Toggle completed state of a todo item
@@ -123,6 +133,7 @@
       todos[editIndex].date = editDate.value;
       renderTodos();
       bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+      showToast("Task updated successfully.");
     };
 
     // Open delete confirmation modal
@@ -136,6 +147,7 @@
       todos.splice(deleteIndex, 1);
       renderTodos();
       bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+      showToast("Task deleted successfully.");
     };
 
     // Search input filter (case-insensitive)

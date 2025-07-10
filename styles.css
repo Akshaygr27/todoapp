@@ -73,3 +73,7 @@ body {
     #import-file {
       max-width: 300px;
     }
+    .toast {
+      min-width: 240px;
+      opacity: 0.95;
+    }
