@@ -70,3 +70,6 @@ body {
       display: inline-block;
       min-width: 200px;
     }
+    #import-file {
+      max-width: 300px;
+    }

@@ -3,6 +3,7 @@
     let editIndex = null;
     let deleteIndex = null;
 
+    const importFile = document.getElementById("import-file");
     const form = document.getElementById("todo-form");
     const list = document.getElementById("todo-list");
     const pagination = document.getElementById("pagination");
@@ -208,6 +209,73 @@
 
       // Reset to default
       exportSelect.value = "-- select --";
+    });
+    // Function for import file reader and parser logic
+    importFile.addEventListener("change", function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const content = e.target.result;
+        const ext = file.name.split('.').pop().toLowerCase();
+
+        let imported = [];
+
+        try {
+          if (ext === "json") {
+            // Expecting array of objects with id, text, date, completed
+            imported = JSON.parse(content);
+          } else if (ext === "csv") {
+            // Skip header, split by lines
+            const lines = content.trim().split('\n').slice(1);
+            imported = lines.map(line => {
+              const [id, text, date, completed] = line.split(',');
+              return {
+                id: id.trim(),
+                text: text.replace(/(^\"|\"$)/g, '').trim(),
+                date: date.trim(),
+                completed: completed.trim() === 'true'
+              };
+            });
+          } else if (ext === "txt") {
+            // Very basic format parsing (Task: .., Due: .., Completed: ..)
+            const chunks = content.split('---').map(c => c.trim()).filter(Boolean);
+            imported = chunks.map(chunk => {
+              const lines = chunk.split('\n').map(l => l.trim());
+              const text = lines.find(l => l.startsWith("Task:"))?.slice(5).trim() || "";
+              const date = lines.find(l => l.startsWith("Due:"))?.slice(4).trim() || "";
+              const completed = lines.find(l => l.startsWith("Completed:"))?.slice(10).trim() === "true";
+              return { id: generateId(), text, date, completed };
+            });
+          } else if (ext === "sql") {
+            // Parse INSERT statements (very basic)
+            const rows = content.match(/INSERT INTO todos.*?VALUES \\((.*?)\\);/gi) || [];
+            imported = rows.map(row => {
+              const values = row.match(/\\((.*?)\\)/)?.[1].split(',').map(s => s.trim().replace(/^'|'$/g, '')) || [];
+              return {
+                id: values[0],
+                text: values[1],
+                date: values[2],
+                completed: values[3] === 'true' || values[3] === '1'
+              };
+            });
+          }
+
+          // Merge with current todos
+          todos = [...todos, ...imported];
+          localStorage.setItem("udo_todos", JSON.stringify(todos));
+          renderTodos();
+
+          alert(`Imported ${imported.length} tasks successfully.`);
+          importFile.value = ''; // reset input
+
+        } catch (err) {
+          alert("Failed to import. Please check file format.");
+        }
+      };
+
+      reader.readAsText(file);
     });
 
     // Initial rendering of todos on page load

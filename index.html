@@ -19,12 +19,17 @@
 
   <main class="container py-5">
     <div class="mb-4">
-      <h2>Add Task</h2>
+      <!-- Import File Input -->
+      <div class="mb-4">
+        <label for="import-file" class="form-label fw-semibold">Import Tasks</label>
+        <input type="file" id="import-file" class="form-control w-auto" accept=".txt,.json,.csv,.sql">
+      </div>
       <!-- Search Bar -->
       <div class="mb-3">
         <input type="text" id="search-input" class="form-control" placeholder="Search tasks...">
         <div id="no-results" class="text-danger mt-2 text-center" style="display: none;"><strong>No results found</strong></div>
       </div>
+      <h2>Add Task</h2>
       <form id="todo-form" class="row g-2">
         <div class="col-md-6">
           <input type="text" id="todo-text" class="form-control" placeholder="Enter your task" required />
