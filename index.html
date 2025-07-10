@@ -20,6 +20,11 @@
   <main class="container py-5">
     <div class="mb-4">
       <h2>Add Task</h2>
+      <!-- Search Bar -->
+      <div class="mb-3">
+        <input type="text" id="search-input" class="form-control" placeholder="Search tasks...">
+        <div id="no-results" class="text-danger mt-2" style="display: none;">No results found</div>
+      </div>
       <form id="todo-form" class="row g-2">
         <div class="col-md-6">
           <input type="text" id="todo-text" class="form-control" placeholder="Enter your task" required />

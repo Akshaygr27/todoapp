@@ -8,6 +8,8 @@
     const pagination = document.getElementById("pagination");
     const editText = document.getElementById("edit-text");
     const editDate = document.getElementById("edit-date");
+    const searchInput = document.getElementById("search-input");
+    const noResults = document.getElementById("no-results");
 
     // Generate a simple unique ID using timestamp and random string
     const generateId = () => `id-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
@@ -16,13 +18,20 @@
     const itemsPerPage = 5;
 
     // Render all todo items into the list container
-    const renderTodos = () => {
+    const renderTodos = (filtered = null) => {
       list.innerHTML = "";
       pagination.innerHTML = "";
-      // Display the latest todos first
-      const reversedTodos = [...todos].reverse();
+      const dataToRender = filtered ? [...filtered].reverse() : [...todos].reverse();
+
       const start = (currentPage - 1) * itemsPerPage;
-      const paginatedTodos = reversedTodos.slice(start, start + itemsPerPage);
+      const paginatedTodos = dataToRender.slice(start, start + itemsPerPage);
+
+      if (dataToRender.length === 0) {
+        noResults.style.display = "block";
+      } else {
+        noResults.style.display = "none";
+      }
+
       paginatedTodos.forEach((todo) => {
         const index = todos.indexOf(todo);
         const card = document.createElement("div");
@@ -47,7 +56,7 @@
         list.appendChild(card);
       });
       // Store updated todos to localStorage
-      renderPagination(reversedTodos.length);
+      if (!filtered) renderPagination(dataToRender.length);
       localStorage.setItem("udo_todos", JSON.stringify(todos));
     };
     // Render pagination based on total items
@@ -110,6 +119,23 @@
       renderTodos();
       bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
     };
+    
+    // Search input filter (case-insensitive)
+    searchInput.addEventListener("input", function () {
+      const keyword = this.value.trim().toLowerCase();
 
+      if (keyword === "") {
+        currentPage = 1;
+        renderTodos();
+        return;
+      }
+
+      const filtered = todos.filter(todo =>
+        todo.text.toLowerCase().includes(keyword)
+      );
+
+      currentPage = 1;
+      renderTodos(filtered);
+    });
     // Initial rendering of todos on page load
     renderTodos();
