@@ -10,6 +10,7 @@
     const editDate = document.getElementById("edit-date");
     const searchInput = document.getElementById("search-input");
     const noResults = document.getElementById("no-results");
+    const filterSelect = document.getElementById("filter-select");
 
     // Generate a simple unique ID using timestamp and random string
     const generateId = () => `id-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
@@ -21,7 +22,22 @@
     const renderTodos = (filtered = null) => {
       list.innerHTML = "";
       pagination.innerHTML = "";
-      const dataToRender = filtered ? [...filtered].reverse() : [...todos].reverse();
+
+      // Get selected filter (all, completed, pending)
+      const selectedFilter = filterSelect.value;
+
+      // Prepare data (from filtered search or all todos)
+      let dataToRender = filtered ? [...filtered] : [...todos];
+
+      // Apply filter logic
+      if (selectedFilter === "completed") {
+        dataToRender = dataToRender.filter(todo => todo.completed);
+      } else if (selectedFilter === "pending") {
+        dataToRender = dataToRender.filter(todo => !todo.completed);
+      }
+
+      // Sort latest first
+      dataToRender = dataToRender.reverse();
 
       const start = (currentPage - 1) * itemsPerPage;
       const paginatedTodos = dataToRender.slice(start, start + itemsPerPage);
@@ -54,7 +70,7 @@
           </div>
         `;
         list.appendChild(card);
-      });
+    });
       // Store updated todos to localStorage
       if (!filtered) renderPagination(dataToRender.length);
       localStorage.setItem("udo_todos", JSON.stringify(todos));
@@ -119,7 +135,7 @@
       renderTodos();
       bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
     };
-    
+
     // Search input filter (case-insensitive)
     searchInput.addEventListener("input", function () {
       const keyword = this.value.trim().toLowerCase();
@@ -136,6 +152,12 @@
 
       currentPage = 1;
       renderTodos(filtered);
+    });
+    // Filter dropdown change event
+    // This function listens for changes in the filter dropdown and re-renders the todos accordingly
+    filterSelect.addEventListener("change", () => {
+      currentPage = 1;
+      renderTodos();
     });
     // Initial rendering of todos on page load
     renderTodos();

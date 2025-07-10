@@ -23,7 +23,7 @@
       <!-- Search Bar -->
       <div class="mb-3">
         <input type="text" id="search-input" class="form-control" placeholder="Search tasks...">
-        <div id="no-results" class="text-danger mt-2" style="display: none;">No results found</div>
+        <div id="no-results" class="text-danger mt-2 text-center" style="display: none;"><strong>No results found</strong></div>
       </div>
       <form id="todo-form" class="row g-2">
         <div class="col-md-6">
@@ -34,6 +34,15 @@
         </div>
         <div class="col-md-2">
           <button type="submit" class="btn btn-dark w-100">Add</button>
+        </div>
+        <!-- Filter Dropdown -->
+        <div class="mb-3">
+          <label for="filter-select" class="form-label fw-semibold">Filter Tasks</label>
+          <select id="filter-select" class="form-select w-auto">
+            <option value="all" selected>All</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+          </select>
         </div>
       </form>
     </div>
