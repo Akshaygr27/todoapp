@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text:wght@400;500;600;700&display=swap');
+body {
+      font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f1f3f6;
+      color: #333;
+    }
+
+    /* Navbar styling */
+    .navbar {
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Section below navbar */
+    .app-container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      margin-top: 2rem;
+    }
+
+    /* Styling for each todo item */
+    .todo-card {
+      transition: all 0.3s ease-in-out;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Style for completed todo items */
+    .todo-card.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    /* Animation on appearance */
+    .fade-in {
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
