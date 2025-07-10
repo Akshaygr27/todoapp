@@ -49,3 +49,9 @@ body {
         transform: translateY(0);
       }
     }
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+    }

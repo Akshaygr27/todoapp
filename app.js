@@ -5,18 +5,26 @@
 
     const form = document.getElementById("todo-form");
     const list = document.getElementById("todo-list");
+    const pagination = document.getElementById("pagination");
     const editText = document.getElementById("edit-text");
     const editDate = document.getElementById("edit-date");
 
     // Generate a simple unique ID using timestamp and random string
     const generateId = () => `id-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
+    let currentPage = 1;
+    const itemsPerPage = 5;
+
     // Render all todo items into the list container
     const renderTodos = () => {
       list.innerHTML = "";
+      pagination.innerHTML = "";
       // Display the latest todos first
       const reversedTodos = [...todos].reverse();
-      reversedTodos.forEach((todo, index) => {
+      const start = (currentPage - 1) * itemsPerPage;
+      const paginatedTodos = reversedTodos.slice(start, start + itemsPerPage);
+      paginatedTodos.forEach((todo) => {
+        const index = todos.indexOf(todo);
         const card = document.createElement("div");
         card.className = `col-12 fade-in`;
         card.innerHTML = `
@@ -27,11 +35,11 @@
                 <small class="text-muted">Due: ${todo.date}</small>
               </div>
               <div class="btn-group">
-                <button class="btn btn-sm btn-success" onclick="toggleComplete(${todos.indexOf(todo)})">
+                <button class="btn btn-sm btn-success" onclick="toggleComplete(${index})">
                   ${todo.completed ? 'Undo' : 'Done'}
                 </button>
-                <button class="btn btn-sm btn-primary" onclick="openEdit(${todos.indexOf(todo)})">Edit</button>
-                <button class="btn btn-sm btn-danger" onclick="openDelete(${todos.indexOf(todo)})">Delete</button>
+                <button class="btn btn-sm btn-primary" onclick="openEdit(${index})">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="openDelete(${index})">Delete</button>
               </div>
             </div>
           </div>
@@ -39,8 +47,24 @@
         list.appendChild(card);
       });
       // Store updated todos to localStorage
+      renderPagination(reversedTodos.length);
       localStorage.setItem("udo_todos", JSON.stringify(todos));
     };
+    // Render pagination based on total items
+    // This function creates pagination links based on the total number of items
+    function renderPagination(totalItems) {
+      const pageCount = Math.ceil(totalItems / itemsPerPage);
+      for (let i = 1; i <= pageCount; i++) {
+        const li = document.createElement("li");
+        li.className = `page-item ${i === currentPage ? "active" : ""}`;
+        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        li.onclick = () => {
+          currentPage = i;
+          renderTodos();
+        };
+        pagination.appendChild(li);
+      }
+    }
 
     // Handle add new todo form submission
     form.onsubmit = (e) => {
