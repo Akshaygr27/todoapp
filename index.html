@@ -35,14 +35,28 @@
         <div class="col-md-2">
           <button type="submit" class="btn btn-dark w-100">Add</button>
         </div>
-        <!-- Filter Dropdown -->
-        <div class="mb-3">
-          <label for="filter-select" class="form-label fw-semibold">Filter Tasks</label>
-          <select id="filter-select" class="form-select w-auto">
-            <option value="all" selected>All</option>
-            <option value="completed">Completed</option>
-            <option value="pending">Pending</option>
-          </select>
+        <div class="d-flex flex-column flex-md-row gap-3">
+          <!-- Filter Dropdown -->
+          <div class="mb-3 mb-md-0">
+            <label for="filter-select" class="form-label fw-semibold mb-0">Filter Tasks</label>
+            <select id="filter-select" class="form-select w-auto">
+              <option value="all" selected>All</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+          
+          <!-- Export Dropdown -->
+          <div class="mb-3 mb-md-0">
+            <label for="export-select" class="form-label fw-semibold mb-0">Export Tasks</label>
+            <select id="export-select" class="form-select w-auto">
+              <option selected disabled>-- select --</option>
+              <option value="txt">Plain Text (.txt)</option>
+              <option value="json">JSON (.json)</option>
+              <option value="csv">CSV (.csv)</option>
+              <option value="sql">SQL (.sql)</option>
+            </select>
+          </div>
         </div>
       </form>
     </div>

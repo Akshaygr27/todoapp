@@ -66,3 +66,7 @@ body {
       display: inline-block;
       min-width: 200px;
     }
+    #export-select {
+      display: inline-block;
+      min-width: 200px;
+    }

@@ -11,6 +11,7 @@
     const searchInput = document.getElementById("search-input");
     const noResults = document.getElementById("no-results");
     const filterSelect = document.getElementById("filter-select");
+    const exportSelect = document.getElementById("export-select");
 
     // Generate a simple unique ID using timestamp and random string
     const generateId = () => `id-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
@@ -159,5 +160,55 @@
       currentPage = 1;
       renderTodos();
     });
+    // download helper function
+    function downloadFile(content, fileName, contentType) {
+      const blob = new Blob([content], { type: contentType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+    // Handle export on dropdown selection
+    exportSelect.addEventListener("change", () => {
+      if (!todos.length) {
+        alert("No todos to export.");
+        exportSelect.value = "-- select --";
+        return;
+      }
+
+      let content = "";
+      const type = exportSelect.value;
+
+      switch (type) {
+        case "txt":
+          content = todos.map(t => `Task: ${t.text}\nDue: ${t.date}\nCompleted: ${t.completed}\n---`).join("\n");
+          downloadFile(content, "todos.txt", "text/plain");
+          break;
+
+        case "json":
+          content = JSON.stringify(todos, null, 2);
+          downloadFile(content, "todos.json", "application/json");
+          break;
+
+        case "csv":
+          content = "ID,Task,Due Date,Completed\n";
+          content += todos.map(t => `${t.id},"${t.text}",${t.date},${t.completed}`).join("\n");
+          downloadFile(content, "todos.csv", "text/csv");
+          break;
+
+        case "sql":
+          content = todos.map(t =>
+            `INSERT INTO todos (id, text, date, completed) VALUES ('${t.id.replace(/'/g, "''")}', '${t.text.replace(/'/g, "''")}', '${t.date}', ${t.completed});`
+          ).join("\n");
+          downloadFile(content, "todos.sql", "text/sql");
+          break;
+      }
+
+      // Reset to default
+      exportSelect.value = "-- select --";
+    });
+
     // Initial rendering of todos on page load
     renderTodos();
